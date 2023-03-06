@@ -12,6 +12,7 @@ public class StudentService {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        System.out.println("Student "+ std.getName()+ " is saved.");
         return UUID.randomUUID().toString();
     }
 }
