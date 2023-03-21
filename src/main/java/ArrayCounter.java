@@ -1,14 +1,22 @@
 import java.util.Arrays;
 import java.util.concurrent.RecursiveAction;
 
-public class ArraySum extends RecursiveAction {
-    public long sum;
-    int arr[], lo, hi;
+public class ArrayCounter extends RecursiveAction {
+    public long cnt;
+    int[] arr;
+    int lo;
+    int hi;
+    int key ;
 
-    public ArraySum(int[] arr, int lo, int hi) {
+    public ArrayCounter(int[] arr,
+                        int lo,
+                        int hi,
+                        int key) {
         this.arr = arr;
         this.lo = lo;
         this.hi = hi;
+        this.key = key ;
+
     }
 
     public long computeSeq() {
@@ -22,31 +30,36 @@ public class ArraySum extends RecursiveAction {
 //            return left.computeSeq()+ right.computeSeq();
 //        }
         for (int i = lo; i <= hi; ++i) {
-            sum += arr[i];
+            cnt += arr[i];
         }
-        return sum;
+        return cnt;
     }
 
     @Override
     protected void compute() {
         if (hi - lo > 1_000_000) {
             int mid = (lo + hi) / 2;
-            ArraySum left = new ArraySum(arr, lo, mid);
-            ArraySum right = new ArraySum(arr, mid + 1, hi);
+            ArrayCounter left = new ArrayCounter(arr, lo, mid, key);
+            ArrayCounter right = new ArrayCounter(arr, mid + 1, hi, key);
             left.fork();
             right.compute();
             left.join();
-            sum = left.sum + right.sum;
+            cnt = left.cnt + right.cnt;
         } else {
-//            sum =computeSeq();
+//            cnt =computeSeq();
             for (int i = lo; i <= hi; ++i) {
-                sum += arr[i];
+                cnt += (arr[i] == key?1:0);
             }
         }
     }
 
+    public void computeStreamSq() {
+        cnt = Arrays.stream(arr).asLongStream().filter(e -> e == key).count();
+
+    }
+
     public void computeStream() {
-        sum = Arrays.stream(arr).asLongStream().parallel().sum();
+        cnt = Arrays.stream(arr).asLongStream().parallel().filter(e -> e == key).count();
 //        all the intermediate and final operation run in parallel
 //         Introduce to Map Reduce pattern credit to java streams
     }

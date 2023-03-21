@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.IntStream;
 
-public class ArraySumTest extends TestCase {
+public class ArrayCounterTest extends TestCase {
 
 
     private int[] randomArray(int size) {
@@ -25,10 +25,10 @@ public class ArraySumTest extends TestCase {
 
     public void testArraySumSeq() {
 
-        int size = 1000_000_000;
+        int size = 1000_000;
         int[] arr = intStream(size);
 
-        ArraySum array = new ArraySum(arr, 0, arr.length - 1);
+        ArrayCounter array = new ArrayCounter(arr, 0, arr.length - 1, 2);
         long start = System.currentTimeMillis();
         long sum = array.computeSeq();
         long endTimer = System.currentTimeMillis() - start;
@@ -39,28 +39,42 @@ public class ArraySumTest extends TestCase {
     public void testArraySumPP() {
         System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism","7");
 
-        int size = 1000_000_000;
+        int size = 1000_000;
         int[] arr = intStream(size);
 
-        ArraySum array = new ArraySum(arr, 0, arr.length - 1);
+        ArrayCounter array = new ArrayCounter(arr, 0, arr.length - 1, 2);
         long start = System.currentTimeMillis();
         ForkJoinPool.commonPool().invoke(array);
         long endTimer = System.currentTimeMillis() - start;
-        System.out.printf("Parallel Time execution for Random Array of size %d is %d ms sum is %d\n", size, endTimer, array.sum);
+        System.out.printf("Parallel Time execution for Random Array of size %d is %d ms sum is %d\n", size, endTimer, array.cnt);
+//        assertEquals(15,res);
+    }
+
+    public void testArraySumStreamSq() {
+        System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism","7");
+
+        int size = 1000_000;
+        int[] arr = intStream(size);
+
+        ArrayCounter array = new ArrayCounter(arr, 0, arr.length - 1, 2);
+        long start = System.currentTimeMillis();
+        array.computeStreamSq();
+        long endTimer = System.currentTimeMillis() - start;
+        System.out.printf("Parallel Stream Time execution for Random Array of size %d is %d ms sum is %d\n", size, endTimer, array.cnt);
 //        assertEquals(15,res);
     }
 
     public void testArraySumStream() {
         System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism","7");
 
-        int size = 1000_000_000;
+        int size = 1000_000;
         int[] arr = intStream(size);
 
-        ArraySum array = new ArraySum(arr, 0, arr.length - 1);
+        ArrayCounter array = new ArrayCounter(arr, 0, arr.length - 1, 2);
         long start = System.currentTimeMillis();
         array.computeStream();
         long endTimer = System.currentTimeMillis() - start;
-        System.out.printf("Parallel Stream Time execution for Random Array of size %d is %d ms sum is %d\n", size, endTimer, array.sum);
+        System.out.printf("Parallel Stream Time execution for Random Array of size %d is %d ms sum is %d\n", size, endTimer, array.cnt);
 //        assertEquals(15,res);
     }
 

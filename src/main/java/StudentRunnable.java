@@ -3,7 +3,7 @@ import Service.StudentService;
 
 public class StudentRunnable implements Runnable {
 
-    private Student student;
+    private final Student student;
     private StudentService studentService;
 
     public StudentRunnable(Student student, StudentService studentService) {

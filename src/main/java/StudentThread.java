@@ -3,7 +3,7 @@ import Service.StudentService;
 
 public class StudentThread extends Thread {
 
-    private Student student;
+    private final Student student;
     private StudentService studentService;
 
     public StudentThread(Student student, StudentService studentService) {
